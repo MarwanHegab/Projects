@@ -1,0 +1,541 @@
+#Introduction
+print("Welcome to the vending machine change maker program")
+print("Change maker initialized.")
+
+#Initial Stock Container
+num_nickels = 25
+num_dimes = 25
+num_quarters = 25
+num_ones = 0
+num_fives = 0
+
+#Initial Print Stock
+stock_container = f"""
+Stock contains:
+   {num_nickels} nickels
+   {num_dimes} dimes
+   {num_quarters} quarters
+   {num_ones} ones
+   {num_fives} fives
+"""
+print(stock_container)
+
+
+#Menu for Deposits
+dep_menu = """
+Menu for deposits:
+   'n' - deposit a nickel
+   'd' - deposit a dime
+   'q' - deposit a quarter
+   'o' - deposit a one dollar bill
+   'f' - deposit a five dollar bill
+   'c' - cancel the purchase
+        """
+
+#
+#
+#   PURCHASE PRICE AND CAPTURING AND DETERMINING USER INPPUT
+#
+#
+x = True
+deposite_total = 0
+while x:
+    purchase_price = input("Enter the purchase price (xx.xx) or `q' to quit: ")
+    if purchase_price == 'q':
+        fourth_value = deposite_total // 1000
+        third_value = (deposite_total // 100) % 10
+        second_value = (deposite_total // 10) % 10
+        first_value = deposite_total % 10
+        if (fourth_value == 0) and (third_value == 0) and (second_value == 0):      #e.g. 0.05
+            print(f"Total: {first_value} cents")
+        elif (fourth_value == 0) and (third_value == 0):        #e.g. .22
+            print(f"Total {second_value}{first_value} cents")
+        elif (fourth_value == 0) and (second_value == 0):       #e.g. 1.03
+            print(f"Total {third_value} dollars and {first_value} cents")
+        elif (fourth_value == 0):       #e.g. 1.45
+            print(f"Total: {third_value} dollars and {second_value}{first_value} cents")
+        elif (second_value == 0):       #e.g. 25.07
+            print(f"Total: {fourth_value}{third_value} dollars and {first_value} cents")
+        elif (second_value == 0) and (first_value == 0):        #e.g. 25
+            print(f"Total: {fourth_value}{third_value} dollars and 0 cents")
+        else:       #28.76
+            print(f"Total: {fourth_value}{third_value} dollars and {second_value}{first_value} cents")
+        x = False
+    elif (l.isalpha() for l in purchase_price) and ('.' not in purchase_price) and (purchase_price.isnumeric() == False):
+        print("Invalid purchase price. Try again")
+        print('')
+    elif ('.' in purchase_price) and (purchase_price.replace('.','').isnumeric() == False):
+        print("Invalid purchase price. Try again")
+        print('')
+    elif float(purchase_price) > 99.99:
+        print("Invalid purchase price. Try again")
+        print('')
+    elif (float(purchase_price) * 100 % 5) != 0:
+        print("Illegal price: Must be a non-negative multiple of 5 cents.")
+        print('')
+    else:
+        purchase_price = round(float(purchase_price) * 100)
+        fourth_value = purchase_price // 1000
+        third_value = (purchase_price // 100) % 10
+        second_value = (purchase_price // 10) % 10
+        first_value = purchase_price % 10
+        print(dep_menu)
+        print('')
+        if (fourth_value == 0) and (third_value == 0) and (second_value == 0):      #e.g. 0.05
+            print(f"Payment due: {first_value} cents")
+        elif (fourth_value == 0) and (third_value == 0):        #e.g. .22
+            print(f"Payment due: {second_value}{first_value} cents")
+        elif (fourth_value == 0) and (second_value == 0):       #e.g. 1.03
+            print(f"Payment due: {third_value} dollars and {first_value} cents")
+        elif (fourth_value == 0):       #e.g. 1.45
+            print(f"Payment due: {third_value} dollars and {second_value}{first_value} cents")
+        elif (second_value == 0):       #e.g. 25.07
+            print(f"Payment due: {fourth_value}{third_value} dollars and {first_value} cents")
+        elif (second_value == 0) and (first_value == 0):        #e.g. 25
+            print(f"Payment due: {fourth_value}{third_value} dollars and 0 cents")
+        else:       #28.76
+            print(f"Payment due: {fourth_value}{third_value} dollars and {second_value}{first_value} cents")
+
+
+#REDEFINE SOME VARIABLES AND ADDING NEW ONES
+        payment_due = purchase_price
+        deposite_total = 0
+        cancel = 0
+
+        stock_container = f"""
+Stock contains:
+   {num_nickels} nickels
+   {num_dimes} dimes
+   {num_quarters} quarters
+   {num_ones} ones
+   {num_fives} fives
+"""
+
+#CHECKING THE PAYMENT DUE, WHICH IS INITIALLY BASED ON THE PURCHASE PRICE
+
+        while payment_due > 0:
+
+#Defining some variables for use later on in the loop
+
+            change_num_dimes = 0
+            change_num_fives = 0
+            change_num_nickels = 0
+            change_num_ones = 0
+            change_num_quarters = 0
+
+#CAPTURING THE USER DEPOSITE
+            deposite = input('Indicate your deposit: ')
+
+#DETERMINING THE DEPOSITE VALUE AT 'n'
+            if deposite == 'n':
+                payment_due -= 5
+                deposite_total += 5
+                num_nickels += 1
+                cancel += 5
+
+                fourth_value = payment_due // 1000
+                third_value = (payment_due // 100) % 10
+                second_value = (payment_due // 10) % 10
+                first_value = payment_due % 10
+                
+                change = deposite_total - purchase_price
+                while change > 0:
+                    if change // 500 == 0:
+                        change_num_fives = 0
+                    else:
+                        change_num_fives = change // 500
+                        change -= (change_num_fives * 500)
+                    if change // 100 == 0:
+                        change_num_ones = 0
+                    else:
+                        change_num_ones = change // 100
+                        change -= (change_num_ones * 100)
+                    if change // 25 == 0:
+                        change_num_quarters = 0
+                    else:
+                        change_num_quarters = change // 25
+                        change -= (change_num_fives * 25)
+                    if change // 10 == 0:
+                        change_num_dimes = 0
+                    else:
+                        change_num_dimes = change // 10
+                        change -= (change_num_dimes * 10)
+                    if change // 5 == 0:
+                        change_num_nickels = 0
+                    else:
+                        change_num_nickels = change // 5
+                        change -= (change_num_nickels * 5)
+                    if change_x == 0:
+                        print("  No change due.")
+
+                if payment_due <= 0:
+                    print('')
+                    print("Please take the change below.")
+                    if change_num_fives > 0:
+                        print(f"   {change_num_fives} fives")
+                    if change_num_ones > 0:
+                        print(f"   {change_num_ones} ones")
+                    if change_num_quarters > 0:
+                        print(f"   {change_num_fives} quarters")
+                    if change_num_dimes > 0:
+                        print(f"   {change_num_dimes} dimes")
+                    if change_num_nickels > 0:
+                        print(f"   {change_num_nickels} nickels")
+                    if change == 0:
+                        print("  No change due.")
+                    print(stock_container)
+                elif (fourth_value == 0) and (third_value == 0) and (second_value == 0):      #e.g. 0.05
+                    print(f"Payment due: {first_value} cents")
+                elif (fourth_value == 0) and (third_value == 0):        #e.g. .22
+                    print(f"Payment due: {second_value}{first_value} cents")
+                elif (fourth_value == 0) and (second_value == 0):       #e.g. 1.03
+                    print(f"Payment due: {third_value} dollars and {first_value} cents")
+                elif (fourth_value == 0):       #e.g. 1.45
+                    print(f"Payment due: {third_value} dollars and {second_value}{first_value} cents")
+                elif (second_value == 0):       #e.g. 25.07
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {first_value} cents")
+                elif (second_value == 0) and (first_value == 0):        #e.g. 25
+                    print(f"Payment due: {fourth_value}{third_value} dollars and 0 cents")
+                else:       #28.76
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {second_value}{first_value} cents")
+
+
+#DETERMINING THE DEPOSITE VALUE AT 'd'
+            elif deposite == 'd':
+                payment_due -= 10
+                deposite_total += 10
+                num_dimes += 1
+                cancel += 10
+
+                fourth_value = payment_due // 1000
+                third_value = (payment_due // 100) % 10
+                second_value = (payment_due // 10) % 10
+                first_value = payment_due % 10
+
+                change = deposite_total - purchase_price
+
+                while change > 0:
+                    if change // 500 == 0:
+                        change_num_fives = 0
+                    else:
+                        change_num_fives = change // 500
+                        change -= (change_num_fives * 500)
+                    if change // 100 == 0:
+                        change_num_ones = 0
+                    else:
+                        change_num_ones = change // 100
+                        change -= (change_num_ones * 100)
+                    if change // 25 == 0:
+                        change_num_quarters = 0
+                    else:
+                        change_num_quarters = change // 25
+                        change -= (change_num_fives * 25)
+                    if change // 10 == 0:
+                        change_num_dimes = 0
+                    else:
+                        change_num_dimes = change // 10
+                        change -= (change_num_dimes * 10)
+                    if change // 5 == 0:
+                        change_num_nickels = 0
+                    else:
+                        change_num_nickels = change // 5
+                        change -= (change_num_nickels * 5)
+                    if change_x == 0:
+                        print("  No change due.")
+
+                if payment_due <= 0:
+                    print('')
+                    print("Please take the change below.")
+                    if change_num_fives > 0:
+                        print(f"   {change_num_fives} fives")
+                    if change_num_ones > 0:
+                        print(f"   {change_num_ones} ones")
+                    if change_num_quarters > 0:
+                        print(f"   {change_num_fives} quarters")
+                    if change_num_dimes > 0:
+                        print(f"   {change_num_dimes} dimes")
+                    if change_num_nickels > 0:
+                        print(f"   {change_num_nickels} nickels")
+                    if change == 0:
+                        print("  No change due.")
+                    print(stock_container)
+                elif (fourth_value == 0) and (third_value == 0) and (second_value == 0):      #e.g. 0.05
+                    print(f"Payment due: {first_value} cents")
+                elif (fourth_value == 0) and (third_value == 0):        #e.g. .22
+                    print(f"Payment due: {second_value}{first_value} cents")
+                elif (fourth_value == 0) and (second_value == 0):       #e.g. 1.03
+                    print(f"Payment due: {third_value} dollars and {first_value} cents")
+                elif (fourth_value == 0):       #e.g. 1.45
+                    print(f"Payment due: {third_value} dollars and {second_value}{first_value} cents")
+                elif (second_value == 0):       #e.g. 25.07
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {first_value} cents")
+                elif (second_value == 0) and (first_value == 0):        #e.g. 25
+                    print(f"Payment due: {fourth_value}{third_value} dollars and 0 cents")
+                else:       #28.76
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {second_value}{first_value} cents")
+
+
+#DETERMINING THE DEPOSITE VALUE AT 'q'
+            elif deposite == 'q':
+                payment_due -= 25
+                deposite_total += 25
+                num_quarters += 1
+                cancel += 25
+
+                fourth_value = payment_due // 1000
+                third_value = (payment_due // 100) % 10
+                second_value = (payment_due // 10) % 10
+                first_value = payment_due % 10
+
+                change = deposite_total - purchase_price
+
+                if payment_due <= 0:
+                    print('')
+                    print("Please take the change below.")
+                    if change_num_fives > 0:
+                        print(f"   {change_num_fives} fives")
+                    if change_num_ones > 0:
+                        print(f"   {change_num_ones} ones")
+                    if change_num_quarters > 0:
+                        print(f"   {change_num_fives} quarters")
+                    if change_num_dimes > 0:
+                        print(f"   {change_num_dimes} dimes")
+                    if change_num_nickels > 0:
+                        print(f"   {change_num_nickels} nickels")
+                    if change_x == 0:
+                        print("  No change due.")
+                    print(stock_container)
+                elif (fourth_value == 0) and (third_value == 0) and (second_value == 0):      #e.g. 0.05
+                    print(f"Payment due: {first_value} cents")
+                elif (fourth_value == 0) and (third_value == 0):        #e.g. .22
+                    print(f"Payment due: {second_value}{first_value} cents")
+                elif (fourth_value == 0) and (second_value == 0):       #e.g. 1.03
+                    print(f"Payment due: {third_value} dollars and {first_value} cents")
+                elif (fourth_value == 0):       #e.g. 1.45
+                    print(f"Payment due: {third_value} dollars and {second_value}{first_value} cents")
+                elif (second_value == 0):       #e.g. 25.07
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {first_value} cents")
+                elif (second_value == 0) and (first_value == 0):        #e.g. 25
+                    print(f"Payment due: {fourth_value}{third_value} dollars and 0 cents")
+                else:       #28.76
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {second_value}{first_value} cents")
+
+
+#DETERMINING THE DEPOSITE VALUE AT 'o'
+            elif deposite == 'o':
+                payment_due -= 100
+                deposite_total += 100
+                num_ones += 1
+                cancel += 100
+
+                fourth_value = payment_due // 1000
+                third_value = (payment_due // 100) % 10
+                second_value = (payment_due // 10) % 10
+                first_value = payment_due % 10
+
+                change = deposite_total - purchase_price
+                change_x = deposite_total - purchase_price
+
+                while change > 0:
+                    if change // 500 == 0:
+                        change_num_fives = 0
+                    else:
+                        change_num_fives = change // 500
+                        change -= (change_num_fives * 500)
+                    if change // 100 == 0:
+                        change_num_ones = 0
+                    else:
+                        change_num_ones = change // 100
+                        change -= (change_num_ones * 100)
+                    if change // 25 == 0:
+                        change_num_quarters = 0
+                    else:
+                        change_num_quarters = change // 25
+                        change -= (change_num_fives * 25)
+                    if change // 10 == 0:
+                        change_num_dimes = 0
+                    else:
+                        change_num_dimes = change // 10
+                        change -= (change_num_dimes * 10)
+                    if change // 5 == 0:
+                        change_num_nickels = 0
+                    else:
+                        change_num_nickels = change // 5
+                        change -= (change_num_nickels * 5)
+
+                if payment_due <= 0:
+                    print('')
+                    print("Please take the change below.")
+
+                    if change_num_fives > 0:
+                        print(f"   {change_num_fives} fives")
+                    if change_num_ones > 0:
+                        print(f"   {change_num_ones} ones")
+                    if change_num_quarters > 0:
+                        print(f"   {change_num_fives} quarters")
+                    if change_num_dimes > 0:
+                        print(f"   {change_num_dimes} dimes")
+                    if change_num_nickels > 0:
+                        print(f"   {change_num_nickels} nickels")
+                    if change_x == 0:
+                        print("  No change due.")
+
+                    print(stock_container)
+                elif (fourth_value == 0) and (third_value == 0) and (second_value == 0):      #e.g. 0.05
+                    print(f"Payment due: {first_value} cents")
+                elif (fourth_value == 0) and (third_value == 0):        #e.g. .22
+                    print(f"Payment due: {second_value}{first_value} cents")
+                elif (fourth_value == 0) and (second_value == 0):       #e.g. 1.03
+                    print(f"Payment due: {third_value} dollars and {first_value} cents")
+                elif (fourth_value == 0):       #e.g. 1.45
+                    print(f"Payment due: {third_value} dollars and {second_value}{first_value} cents")
+                elif (second_value == 0):       #e.g. 25.07
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {first_value} cents")
+                elif (second_value == 0) and (first_value == 0):        #e.g. 25
+                    print(f"Payment due: {fourth_value}{third_value} dollars and 0 cents")
+                else:       #28.76
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {second_value}{first_value} cents")
+
+
+#DETERMINING THE DEPOSITE VALUE AT 'f'
+            elif deposite == 'f':
+                payment_due -= 500
+                deposite_total += 500
+                num_fives += 1
+                cancel += 500
+
+                fourth_value = payment_due // 1000
+                third_value = (payment_due // 100) % 10
+                second_value = (payment_due // 10) % 10
+                first_value = payment_due % 10
+
+                change = deposite_total - purchase_price
+
+                while change > 0:
+                    if change // 500 == 0:
+                        change_num_fives = 0
+                    else:
+                        change_num_fives = change // 500
+                        change -= (change_num_fives * 500)
+                    if change // 100 == 0:
+                        change_num_ones = 0
+                    else:
+                        change_num_ones = change // 100
+                        change -= (change_num_ones * 100)
+                    if change // 25 == 0:
+                        change_num_quarters = 0
+                    else:
+                        change_num_quarters = change // 25
+                        change -= (change_num_fives * 25)
+                    if change // 10 == 0:
+                        change_num_dimes = 0
+                    else:
+                        change_num_dimes = change // 10
+                        change -= (change_num_dimes * 10)
+                    if change // 5 == 0:
+                        change_num_nickels = 0
+                    else:
+                        change_num_nickels = change // 5
+                        change -= (change_num_nickels * 5)
+                    if change_x == 0:
+                        print("  No change due.")
+
+                if payment_due <= 0:
+                    print('')
+                    print("Please take the change below.")
+                    if change_num_fives > 0:
+                        print(f"   {change_num_fives} fives")
+                    if change_num_ones > 0:
+                        print(f"   {change_num_ones} ones")
+                    if change_num_quarters > 0:
+                        print(f"   {change_num_fives} quarters")
+                    if change_num_dimes > 0:
+                        print(f"   {change_num_dimes} dimes")
+                    if change_num_nickels > 0:
+                        print(f"   {change_num_nickels} nickels")
+                    if change == 0:
+                        print("  No change due.")
+                    print(stock_container)
+                elif (fourth_value == 0) and (third_value == 0) and (second_value == 0):      #e.g. 0.05
+                    print(f"Payment due: {first_value} cents")
+                elif (fourth_value == 0) and (third_value == 0):        #e.g. .22
+                    print(f"Payment due: {second_value}{first_value} cents")
+                elif (fourth_value == 0) and (second_value == 0):       #e.g. 1.03
+                    print(f"Payment due: {third_value} dollars and {first_value} cents")
+                elif (fourth_value == 0):       #e.g. 1.45
+                    print(f"Payment due: {third_value} dollars and {second_value}{first_value} cents")
+                elif (second_value == 0):       #e.g. 25.07
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {first_value} cents")
+                elif (second_value == 0) and (first_value == 0):        #e.g. 25
+                    print(f"Payment due: {fourth_value}{third_value} dollars and 0 cents")
+                else:       #28.76
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {second_value}{first_value} cents")
+            
+
+#DETERMINING THE DEPOSITE VALUE AT 'c'
+            elif deposite == 'c':
+
+                change = cancel
+                while change > 0:
+                    if change // 500 == 0:
+                        change_num_fives = 0
+                    else:
+                        change_num_fives = change // 500
+                        change -= (change_num_fives * 500)
+                    if change // 100 == 0:
+                        change_num_ones = 0
+                    else:
+                        change_num_ones = change // 100
+                        change -= (change_num_ones * 100)
+                    if change // 25 == 0:
+                        change_num_quarters = 0
+                    else:
+                        change_num_quarters = change // 25
+                        change -= (change_num_fives * 25)
+                    if change // 10 == 0:
+                        change_num_dimes = 0
+                    else:
+                        change_num_dimes = change // 10
+                        change -= (change_num_dimes * 10)
+                    if change // 5 == 0:
+                        change_num_nickels = 0
+                    else:
+                        change_num_nickels = change // 5
+                        change -= (change_num_nickels * 5)
+
+                if cancel >= 0:
+                    print('')
+                    print("Please take the change below.")
+                    if change_num_fives > 0:
+                        print(f"   {change_num_fives} fives")
+                    if change_num_ones > 0:
+                        print(f"   {change_num_ones} ones")
+                    if change_num_quarters > 0:
+                        print(f"   {change_num_fives} quarters")
+                    if change_num_dimes > 0:
+                        print(f"   {change_num_dimes} dimes")
+                    if change_num_nickels > 0:
+                        print(f"   {change_num_nickels} nickels")
+                    if cancel == 0:
+                        print("  No change due.")
+                print(stock_container)
+                break
+                
+
+#DETERMINING THE DEPOSITE VALUE AT AN UNKOWN VALUE
+            else:
+                print(f"Illegal selection: {deposite}")
+                if (fourth_value == 0) and (third_value == 0) and (second_value == 0):      #e.g. 0.05
+                    print(f"Payment due: {first_value} cents")
+                elif (fourth_value == 0) and (third_value == 0):        #e.g. .22
+                    print(f"Payment due: {second_value}{first_value} cents")
+                elif (fourth_value == 0) and (second_value == 0):       #e.g. 1.03
+                    print(f"Payment due: {third_value} dollars and {first_value} cents")
+                elif (fourth_value == 0):       #e.g. 1.45
+                    print(f"Payment due: {third_value} dollars and {second_value}{first_value} cents")
+                elif (second_value == 0):       #e.g. 25.07
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {first_value} cents")
+                elif (second_value == 0) and (first_value == 0):        #e.g. 25
+                    print(f"Payment due: {fourth_value}{third_value} dollars and 0 cents")
+                else:       #28.76
+                    print(f"Payment due: {fourth_value}{third_value} dollars and {second_value}{first_value} cents")
