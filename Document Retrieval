@@ -1,0 +1,100 @@
+import urllib.request
+import re
+import string
+import sys
+
+
+def read_article_file(url):
+    req = urllib.request.urlopen(url)
+    text = req.read()
+    text = text.decode('UTF-8')
+
+    return text
+
+
+def text_to_article_list(text):
+    list = re.split('<NEW ARTICLE>', text)
+    new_list = [] 
+    for i in list:
+        if len(i) != 0:
+            new_list.append(i) 
+
+    return new_list
+
+
+def split_words(text):
+    return list(text.split())
+
+
+def scrub_word(text):
+    new_text = ''
+    for char in text:
+        if char not in string.punctuation:
+            new_text += char
+
+    return new_text
+
+
+def scrub_words(words):
+    #lower capitilization
+    words_lower = []
+    for word in words:
+        words_lower.append(word.lower())
+
+    #remove punctuation
+    words_punct = [''.join(char for char in item
+                    if char not in string.punctuation)
+            for item in words_lower]
+
+    #remove empty strings and white spaces
+    words_empty = []
+    for i in words_punct:
+        if len(i) != 0:
+            words_empty.append(i.strip())
+
+    return words_empty
+
+
+def build_article_index(article_list):
+    article_index = {}
+    for (index, article) in enumerate(article_list):
+        for i in scrub_words(split_words(article)):
+            if i not in article_index:
+                k_set = {index}
+                article_index[i] = k_set
+            else:
+                article_index[i].add(index)            
+        
+    return article_index
+
+
+def find_words(keywords, index):
+    intersect_docs = set()
+    intersect_list = []
+    for i in scrub_words(keywords):
+        if i in index:
+            intersect_list.append(index[i])
+    if len(intersect_list) > 0:
+        intersect_docs = intersect_list[0].intersection(*intersect_list)
+
+    return intersect_docs
+
+
+if __name__ == '__main__':
+    url = sys.argv[1]
+    func = sys.argv[2]
+    keywords = sys.argv[3]
+
+    read_url = read_article_file(url)  
+    cap_articles = text_to_article_list(read_url)   
+    index = build_article_index(cap_articles)  
+
+    if func == 'find':
+        find = find_words(keywords.split(' '), index)
+        for i in find:
+            print(i, end = ' ')
+        print()
+    elif func == 'print':
+        print(cap_articles[int(keywords)])
+    else:
+        print()
