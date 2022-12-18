@@ -1,0 +1,115 @@
+import csv
+
+def read_dna(dna_filename):
+    view = open(dna_filename, 'r')
+    dna_line = view.read()
+    return dna_line
+
+
+def dna_length(dna_filename):
+    length = len(read_dna(dna_filename))
+    return length
+
+
+def read_strs(str_filename):
+    open_csv = open(str_filename, 'r')
+    dictionary = csv.DictReader(open_csv)
+    return list(dictionary)    
+
+
+
+
+def get_strs(str_profile):
+    for i in str_profile:
+        if str_profile[i] == '0':
+            str_profile[i] = 0
+        elif str_profile[i] == '1':
+            str_profile[i] = 1
+        elif str_profile[i] == '2':
+            str_profile[i] = 2
+        elif str_profile[i] == '3':
+            str_profile[i] = 3
+        elif str_profile[i] == '4':
+            str_profile[i] = 4
+        elif str_profile[i] == '5':
+            str_profile[i] = 5
+        elif str_profile[i] == '6':
+            str_profile[i] = 6
+        elif str_profile[i] == '7':
+            str_profile[i] = 7
+        elif str_profile[i] == '8':
+            str_profile[i] = 8
+        elif str_profile[i] == '9':
+            str_profile[i] = 9
+
+    list_tup = [(k, v) for k, v in str_profile.items()]
+    list_tup.pop(0)
+
+     
+    return list_tup
+
+
+
+
+def longest_str_repeat_count(str_frag, dna_seq):
+    n = ''
+    for i in range(len(dna_seq)):
+        if dna_seq[i:i+4] == str_frag:
+            n = dna_seq.replace(dna_seq[i:i+4], '1')
+    
+    max_len = 0
+    for i in range(len(n)):
+        if n[i] == "1":
+            x = i
+            length = 0
+            while x < len(n) and n[x] == "1":
+                length += 1
+                x += 1
+            if length > max_len:
+                max_len = length
+
+
+    return max_len
+
+
+
+
+def find_match(str_profile, dna_seq):
+    x = ''
+    for i in str_profile:
+        if i[1] == longest_str_repeat_count(i[0],dna_seq):
+            x = True
+            continue
+        else:
+            x = False
+            break
+
+    return x
+
+
+
+def dna_match(str_filename, dna_filename):
+    x = ''
+    for i in read_strs(str_filename):
+        if find_match(get_strs(i), read_dna(dna_filename)) == True:
+            return i.get('name')
+        else:
+            x = "No match"
+    
+    return x
+
+            
+
+
+
+
+if __name__ == '__main__':
+    print(dna_match('data/str_profiles.csv', 'data/dna_1.txt'))
+    str_filename = input()
+    dna_filename = input()
+    if str_filename and dna_filename:
+        print(dna_match(f'data/{str_filename}.csv', f'data/{dna_filename}.txt'))
+    else:
+        print("Usage: python dna.py STR_FILE DNA_FILE")
+        
+        
